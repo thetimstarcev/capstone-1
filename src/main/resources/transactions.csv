@@ -29,3 +29,6 @@ date|time|description|vendor|amount
 2025-02-10|18:20:00|Internet bill|Comcast|-89.99
 2026-04-01|09:00:00|April rent|Landlord|-950.00
 2025-03-01|12:00:00|Coffee with client|Starbucks|-14.75
+2026-04-27|15:28:25|Invoice 1311|Egor|2000.0
+2026-04-27|15:29:00||Paying rent|Bergen|-2000.0
+2026-04-27|15:30:04|Rent|Bergen LLC|-20000.0
