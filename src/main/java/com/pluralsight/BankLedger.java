@@ -9,7 +9,7 @@ import java.util.Scanner;
 
 public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
-    public ArrayList<Transaction> transactions = new ArrayList<>();
+    static ArrayList<Transaction> transactionList = new ArrayList<>();
 
     public static String getCurrentDateTime () {
         LocalDate date = LocalDate.now(); // Adding date anf formatting it
@@ -126,7 +126,7 @@ public class BankLedger {
 
             switch (userInput) {
                 case "A", "a":
-                    displauAll();
+                    displayAll();
                     break;
                 case "D", "d":
                     displayDeposits();
@@ -146,11 +146,11 @@ public class BankLedger {
         } while (running);
     }
 
-    private static void displauAll() {
+    private static void displayAll() {
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new FileReader("src/maim/resources/transactions.csv"));
-            reader.readLine();
+            reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
+            reader.readLine(); //skip header
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -162,17 +162,20 @@ public class BankLedger {
                 double amount = Double.parseDouble(parts[4]);
 
                 Transaction transaction = new Transaction(date, time, description, vendor, amount);
+                transactionList.add(transaction);
             }
+            reader.close();
+            for (Transaction transaction : transactionList) {
+                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            }
+
         } catch (IOException e) {
             System.out.println("Error displaying your transactions.");
         }
-
-
-
-
-
     }
+
     private static void displayDeposits() {
+
     }
     private static void displayPayments() {
     }
