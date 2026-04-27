@@ -4,11 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Transactions {
-    LocalDate date;
-    LocalTime time;
-    String description;
-    String vendor;
-    double amount;
+    private LocalDate date;
+    private LocalTime time;
+    private String description;
+    private String vendor;
+    private double amount;
 
     public Transactions(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
@@ -17,7 +17,6 @@ public class Transactions {
         this.vendor = vendor;
         this.amount = amount;
     }
-
     //regiongetters
     public LocalDate getDate() {
         return date;
@@ -39,5 +38,4 @@ public class Transactions {
         return amount;
     }
     //endregions
-
 }

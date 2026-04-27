@@ -11,9 +11,21 @@ import java.util.Scanner;
 public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
 
+    public static String getCurrentDateTime () {
+        LocalDate date = LocalDate.now(); // Adding date anf formatting it
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+
+        return (date.format(dateFormatter) + " | " + time.format(timeFormatter));
+    }
+
     public static void main(String[] args) {
         mainMenu();
         System.out.println("Have a great name!");
+
+
     }
 
     private static void mainMenu() {
@@ -45,7 +57,6 @@ public class BankLedger {
                 break;
             default:
                 System.out.println("Invalid input. Please try again.");
-
         }
 
     }
@@ -61,17 +72,10 @@ public class BankLedger {
         System.out.println("Please enter the amount:");
         double amount = scanner.nextDouble();
 
-        LocalDate date = LocalDate.now(); // Adding date anf formatting it
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        LocalTime time = LocalTime.now();
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-
         //Adding the information and save it to the csv file
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("transactions.csv",true));
-            writer.write(date.format(dateFormatter) + " | " + time.format(timeFormatter) + " | " + description + " | " + vendor + " | " + amount);
+            writer.write( getCurrentDateTime() + description + " | " + vendor + " | " + amount);
             writer.newLine();
             writer.close();
         } catch (IOException e) {
@@ -91,7 +95,16 @@ public class BankLedger {
         System.out.println("Please enter the amount:");
         double amount = scanner.nextDouble();
 
-
+        //Adding the information and save it to the csv file
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("transactions.csv", true));
+            writer.write(getCurrentDateTime() + description + " | " + vendor + " | " + amount);
+            writer.newLine();
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Error saving your transaction.");;
+        }
+        System.out.println("Payment added!");
 
 
         System.out.println("Payment added:");
@@ -111,7 +124,7 @@ public class BankLedger {
                 """;
         String userInput = scanner.nextLine();
         switch (userInput) {
-            case "A":
+            case "A", "a":
         }
     }
 }
