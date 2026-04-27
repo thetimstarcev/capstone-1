@@ -1,15 +1,15 @@
 package com.pluralsight;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
+    public ArrayList<Transaction> transactions = new ArrayList<>();
 
     public static String getCurrentDateTime () {
         LocalDate date = LocalDate.now(); // Adding date anf formatting it
@@ -23,9 +23,7 @@ public class BankLedger {
 
     public static void main(String[] args) {
         mainMenu();
-        System.out.println("Have a great name!");
-
-
+        System.out.println("Have a great day!");
     }
 
     private static void mainMenu() {
@@ -39,26 +37,28 @@ public class BankLedger {
                 
                 Choose an option:
                 """;
-        System.out.println(prompt);
+        boolean running = true;
+        do {
+            System.out.println(prompt);
+            String userInput = scanner.nextLine();
 
-        String userInput = scanner.nextLine();
-
-        switch (userInput) {
-            case "D","d":
-                addDeposit();
-                break;
-            case "P","p":
-                makePayment();
-                break;
-            case "L","l":
-                ledger();
-                break;
-            case "X","x":
-                break;
-            default:
-                System.out.println("Invalid input. Please try again.");
-        }
-
+            switch (userInput) {
+                case "D", "d":
+                    addDeposit();
+                    break;
+                case "P", "p":
+                    makePayment();
+                    break;
+                case "L", "l":
+                    ledger();
+                    break;
+                case "X", "x":
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid input. Please try again.");
+            }
+        } while (running);
     }
 
     private static void addDeposit() {
@@ -98,18 +98,13 @@ public class BankLedger {
         //Adding the information and save it to the csv file
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("transactions.csv", true));
-            writer.write(getCurrentDateTime() + description + " | " + vendor + " | " + amount);
+            writer.write(getCurrentDateTime() +" | " + description + " | " + vendor + " | " + amount);
             writer.newLine();
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your transaction.");;
         }
         System.out.println("Payment added!");
-
-
-        System.out.println("Payment added:");
-        System.out.println(description + " | " + vendor + " | " + amount);
-
     }
 
     private static void ledger() {
@@ -122,9 +117,71 @@ public class BankLedger {
                 
                 Choose an option:
                 """;
-        String userInput = scanner.nextLine();
-        switch (userInput) {
-            case "A", "a":
-        }
+
+        boolean running = true;
+
+        do {
+            System.out.println(prompt);
+            String userInput = scanner.nextLine();
+
+            switch (userInput) {
+                case "A", "a":
+                    displauAll();
+                    break;
+                case "D", "d":
+                    displayDeposits();
+                    break;
+                case "P", "p":
+                    displayPayments();
+                    break;
+                case "R", "r":
+                    displayReports();
+                    break;
+                case "H", "h":
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid input. Please try again.");
+            }
+        } while (running);
     }
+
+    private static void displauAll() {
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new FileReader("src/maim/resources/transactions.csv"));
+            reader.readLine();
+
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                LocalDate date = LocalDate.parse(parts[0]);
+                LocalTime time = LocalTime.parse(parts[1]);
+                String description = parts[2];
+                String vendor = parts[3];
+                double amount = Double.parseDouble(parts[4]);
+
+                Transaction transaction = new Transaction(date, time, description, vendor, amount);
+            }
+        } catch (IOException e) {
+            System.out.println("Error displaying your transactions.");
+        }
+
+
+
+
+
+    }
+    private static void displayDeposits() {
+    }
+    private static void displayPayments() {
+    }
+    private static void displayReports() {
+    }
+
+
+
+
+
+
 }
