@@ -10,8 +10,9 @@ import java.util.Scanner;
 public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Transaction> transactionList = new ArrayList<>();
-    static void loadTransactions(){
-        BufferedReader reader = null;
+
+    static void loadTransactions() {
+        BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
             reader.readLine(); //skip header
@@ -34,8 +35,8 @@ public class BankLedger {
         }
     }
 
-    public static String getCurrentDateTime () {
-        LocalDate date = LocalDate.now(); // Adding date anf formatting it
+    public static String getCurrentDateTime() {
+        LocalDate date = LocalDate.now(); // Adding date and formatting it
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
         LocalTime time = LocalTime.now();
@@ -97,7 +98,7 @@ public class BankLedger {
 
         //Adding the information and save it to the csv file
         try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv",true));
+            BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
             writer.write(getCurrentDateTime() + description + "|" + vendor + "|" + amount);
             writer.close();
@@ -116,7 +117,7 @@ public class BankLedger {
         String vendor = scanner.nextLine();
 
         System.out.println("Please enter the amount:");
-        double amount = scanner.nextDouble() *-1; //make the amount negative
+        double amount = scanner.nextDouble() * -1; //make the amount negative
 
 
         //Adding the information and save it to the csv file
@@ -126,7 +127,7 @@ public class BankLedger {
             writer.write(getCurrentDateTime() + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
-            System.out.println("Error saving your transaction.");;
+            System.out.println("Error saving your transaction.");
         }
         System.out.println("Payment added!");
     }
@@ -141,7 +142,6 @@ public class BankLedger {
                 
                 Choose an option:
                 """;
-
         boolean running = true;
 
         do {
@@ -174,7 +174,7 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
-            }
+        }
     }
 
     private static void displayDeposits() {
@@ -185,6 +185,7 @@ public class BankLedger {
             }
         }
     }
+
     private static void displayPayments() {
         loadTransactions();
         for (Transaction transaction : transactionList) {
@@ -193,12 +194,76 @@ public class BankLedger {
             }
         }
     }
+
     private static void displayReports() {
+        String prompt = """
+                1) Month To Date
+                2) Previous Month
+                3) Year To Date
+                4) Previous Year
+                5) Search by Vendor
+                0) Back
+                
+                Choose an option:
+                """;
+        boolean running = true;
+
+        do {
+            System.out.println(prompt);
+            String userInput = scanner.nextLine();
+
+            switch (userInput) {
+                case "1":
+                    monthToDate();
+                    break;
+                case "2":
+                    previousMonth();
+                    break;
+                case "3":
+                    yearToDate();
+                    break;
+                case "4":
+                    previousYear();
+                    break;
+                case "5":
+                    searchByVendor();
+                    break;
+                case "0":
+                    ledger();
+                    break;
+                default:
+                    System.out.println("Invalid input. Please try again.");
+            }
+        } while (true);
     }
 
+    private static void monthToDate() {
+        loadTransactions();
+        LocalDate today = LocalDate.now();
+        for (Transaction transaction : transactionList) {
+            if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue() == today.getMonthValue()) {
+                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            }
+        }
+    }
 
+    private static void previousMonth () {
+        }
 
+    private static void yearToDate () {
+        loadTransactions();
+        LocalDate today = LocalDate.now();
+        for (Transaction transaction : transactionList) {
+            if (transaction.getDate().getYear() == today.getYear()) {
+                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            }
+        }
+    }
 
+        private static void previousYear () {
+        }
 
+        private static void searchByVendor () {
+        }
+    }
 
-}
