@@ -9,6 +9,7 @@ import java.util.Scanner;
 
 public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
+    static LocalDate today = LocalDate.now();
     static ArrayList<Transaction> transactionList = new ArrayList<>();
 
     static void loadTransactions() {
@@ -239,7 +240,6 @@ public class BankLedger {
 
     private static void monthToDate() {
         loadTransactions();
-        LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue() == today.getMonthValue()) {
                 System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
@@ -248,11 +248,13 @@ public class BankLedger {
     }
 
     private static void previousMonth () {
+        loadTransactions();
+
+
         }
 
     private static void yearToDate () {
         loadTransactions();
-        LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear()) {
                 System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
@@ -264,6 +266,15 @@ public class BankLedger {
         }
 
         private static void searchByVendor () {
+        System.out.println("--- Search Your Transaction by Vendor---");
+        System.out.println("Please enter the name of the Vendor: ");
+        String vendor = scanner.nextLine();
+        loadTransactions();
+        for (Transaction transaction : transactionList) {
+            if (transaction.getVendor().equalsIgnoreCase(vendor)) {
+                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            }
         }
-    }
+        }
+}
 
