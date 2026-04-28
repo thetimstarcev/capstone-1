@@ -36,15 +36,15 @@ public class BankLedger {
         }
     }
 
-    public static String getCurrentDateTime() {
-        LocalDate date = LocalDate.now(); // Adding date and formatting it
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-        LocalTime time = LocalTime.now();
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-
-        return (date.format(dateFormatter) + "|" + time.format(timeFormatter) + "|");
-    }
+//    public static String getCurrentDateTime() {
+//        LocalDate date = LocalDate.now(); // Adding date and formatting it
+//        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//
+//        LocalTime time = LocalTime.now();
+//        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+//
+//        return (date.format(dateFormatter) + "|" + time.format(timeFormatter) + "|");
+//    }
 
     public static void main(String[] args) {
         mainMenu();
@@ -101,7 +101,7 @@ public class BankLedger {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
-            writer.write(getCurrentDateTime() + description + "|" + vendor + "|" + amount);
+            writer.write(description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your transaction");
@@ -111,6 +111,13 @@ public class BankLedger {
 
     private static void makePayment() {
         System.out.println("--- Make Payment---");
+        System.out.println("Please enter the transaction date (yyyy/MM/dd): ");
+        String dateInput = scanner.nextLine().replace('/','-');
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate date = LocalDate.parse(dateInput,dateFormatter);
+
+        System.out.println("Please enter the transaction date (yyyy/MM/dd): ");
+
         System.out.println("Please enter the transaction description: ");
         String description = scanner.nextLine();
 
@@ -125,7 +132,7 @@ public class BankLedger {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
-            writer.write(getCurrentDateTime() + description + "|" + vendor + "|" + amount);
+            writer.write(date + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your transaction.");
@@ -249,9 +256,12 @@ public class BankLedger {
 
     private static void previousMonth () {
         loadTransactions();
-
-
+        for (Transaction transaction : transactionList) {
+            if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue()==today.getMonthValue()-1) {
+                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            }
         }
+    }
 
     private static void yearToDate () {
         loadTransactions();
@@ -262,10 +272,11 @@ public class BankLedger {
         }
     }
 
-        private static void previousYear () {
+    private static void previousYear () {
+        //TODO
         }
 
-        private static void searchByVendor () {
+    private static void searchByVendor () {
         System.out.println("--- Search Your Transaction by Vendor---");
         System.out.println("Please enter the name of the Vendor: ");
         String vendor = scanner.nextLine();
@@ -275,6 +286,6 @@ public class BankLedger {
                 System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
             }
         }
-        }
+    }
 }
 
