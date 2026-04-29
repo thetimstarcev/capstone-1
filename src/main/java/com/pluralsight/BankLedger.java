@@ -174,6 +174,8 @@ public class BankLedger {
             System.out.println("Error saving your transaction");
         }
         System.out.println("Deposit added!");
+        System.out.println("Would you like to add another deposit? (yes/no): ");
+
     }
 
     // Making Payment
@@ -393,7 +395,24 @@ public class BankLedger {
     }
 
     private static void customSearch() {
-        //TODO
+        loadTransactions();
+        sortTransaction();
+        System.out.println("--- Custom Search---");
+        System.out.println("Please enter start date (MM/DD/YYYY) or press Enter to skip: ");
+        String startDateInput = scanner.nextLine();
+
+        System.out.println("Please enter end date (MM/DD/YYYY) or press Enter to skip: ");
+        String endDateInput = scanner.nextLine();
+
+        System.out.println("Please enter transaction description or press Enter to skip: ");
+        String descriptionInput = scanner.nextLine();
+
+        System.out.println("Please enter transaction vendor or press Enter to skip: ");
+        String vendorInput = scanner.nextLine();
+
+        System.out.println("Please enter the amount or press Enter to skip: ");
+        String amountInput = scanner.nextLine();
+
     }
 }
 
