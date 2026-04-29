@@ -38,4 +38,10 @@ public class Transaction {
         return amount;
     }
     //endregions
+
+    public void displayTransactions () {
+        System.out.printf("%-12s %-12s %-30s %-20s $%10.2f%n", date, time, description, vendor, amount);
+    }
+
+
 }

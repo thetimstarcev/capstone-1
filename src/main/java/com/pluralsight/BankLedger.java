@@ -91,15 +91,6 @@ public class BankLedger {
         return time;
     }
 
-//    public static LocalDate getCurrentDate() {
-//        LocalDate date = LocalDate.now(); // Adding date and formatting it
-//        return LocalDate.now();
-//    }
-//
-//    public static LocalTime getCurrentTime() {
-//        return LocalTime.now().withSecond(59);
-//    }
-
     //Displaying Main Menu
     private static void mainMenu() {
         String prompt = """
@@ -266,8 +257,9 @@ public class BankLedger {
 
     private static void displayAll() {
         loadTransactions();
+
         for (Transaction transaction : transactionList) {
-            System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            transaction.displayTransactions();
         }
     }
 
