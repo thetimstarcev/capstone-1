@@ -12,6 +12,7 @@ public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Transaction> transactionList = new ArrayList<>();
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
     public static void main(String[] args) {
         mainMenu();
@@ -54,9 +55,7 @@ public class BankLedger {
             try {
                 System.out.println("Please enter the transaction date (MM/DD/YYYY): ");
                 String dateInput = scanner.nextLine(); //enter US date format
-
-                DateTimeFormatter inputDateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                date = LocalDate.parse(dateInput, inputDateFormatter);
+                date = LocalDate.parse(dateInput, DATE_FORMATTER);
 
                 validDate = true;
             } catch (Exception e) {
@@ -76,23 +75,22 @@ public class BankLedger {
             // adding 0 and seconds if hour is entered as a single number
             if (timeInput.length() == 4 && timeInput.contains(":")) {
                 timeInput = "0" + timeInput + ":00";
-                validTime = true;
             }
             // adding 0 if hour entered as a single number
             else if (timeInput.length() == 7 && timeInput.contains(":")) {
                 timeInput = "0" + timeInput;
-                validTime = true;
             }
 
             // adding seconds if not entered
             else if (timeInput.length() == 5) {
                 timeInput = timeInput + ":00";
-                validTime = true;
             }
-            else {
+            try {
+                time = LocalTime.parse(timeInput);
+                validTime = true;
+            } catch (Exception e) {
                 System.out.println("Invalid time format. Try again.");
             }
-            time = LocalTime.parse(timeInput);
         } while (!validTime);
         return time;
     }
@@ -122,7 +120,7 @@ public class BankLedger {
                     makePayment();
                     break;
                 case "L", "l":
-                    ledger();
+                    displayLedger();
                     break;
                 case "X", "x":
                     running = false;
@@ -217,7 +215,7 @@ public class BankLedger {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
-            writer.write(date + "|" + time + "|" + description + "|" + vendor + "|" + amount);
+            writer.write(date + "|" + time.format(TIME_FORMATTER) + "|" + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your transaction.");
@@ -226,7 +224,7 @@ public class BankLedger {
     }
 
     //Displaying Ledger submenu
-    private static void ledger() {
+    private static void displayLedger() {
         String prompt = """
                 --- Ledger---
                 
@@ -316,16 +314,16 @@ public class BankLedger {
 
             switch (userInput) {
                 case "1":
-                    monthToDate();
+                    displayMonthToDate();
                     break;
                 case "2":
-                    previousMonth();
+                    displayPreviousMonth();
                     break;
                 case "3":
-                    yearToDate();
+                    displayYearToDate();
                     break;
                 case "4":
-                    previousYear();
+                    displayPreviousYear();
                     break;
                 case "5":
                     searchByVendor();
@@ -334,7 +332,7 @@ public class BankLedger {
                     customSearch();
                     break;
                 case "0":
-                    ledger();
+                    running = false;
                     break;
                 default:
                     System.out.println("Invalid input. Please try again.");
@@ -342,7 +340,7 @@ public class BankLedger {
         } while (running);
     }
 
-    private static void monthToDate() {
+    private static void displayMonthToDate() {
         loadTransactions();
         LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
@@ -352,7 +350,7 @@ public class BankLedger {
         }
     }
 
-    private static void previousMonth () {
+    private static void displayPreviousMonth() {
         loadTransactions();
         LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
@@ -362,7 +360,7 @@ public class BankLedger {
         }
     }
 
-    private static void yearToDate () {
+    private static void displayYearToDate() {
         loadTransactions();
         LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
@@ -372,7 +370,7 @@ public class BankLedger {
         }
     }
 
-    private static void previousYear () {
+    private static void displayPreviousYear() {
         loadTransactions();
         int previousYear = LocalDate.now().getYear() -1;
         for (Transaction transaction : transactionList) {
@@ -394,14 +392,8 @@ public class BankLedger {
         }
     }
 
-
-    public static void displayTransactions(ArrayList<Transaction> transactions) {
-        //loop and print transactions
-    }
-
     private static void customSearch() {
         loadTransactions();
-        sortTransaction();
         System.out.println("--- Custom Search---");
         System.out.println("Please enter start date (MM/DD/YYYY) or press Enter to skip: ");
         String startDateInput = scanner.nextLine();
@@ -418,12 +410,77 @@ public class BankLedger {
         System.out.println("Please enter the amount or press Enter to skip: ");
         String amountInput = scanner.nextLine();
 
-//        ArrayList<Transaction> result = filterByStartDate(startDateInput, transactionList);
-////        result = filterByEndDate(endDateInput, transactionList);
+        ArrayList<Transaction> result = transactionList;
+        result = filterByStartDate(startDateInput, result);
+        result = filterByEndDate(endDateInput, result);
+        result = filterByDescription(descriptionInput, result);
+        result = filterByVendor(vendorInput, result);
+        result = filterByAmount(amountInput, result);
+
+        System.out.println("---Your custom report:---");
+        //displayTransactions(result);
+        }
 //
 //        displayAll();
 //        displayTransactions(transactionList);
 
+
+
+    private static ArrayList<Transaction> filterByStartDate(String startDateInput, ArrayList<Transaction> result) {
+        if (startDateInput.isBlank()) {
+            return result;
+        }
+        ArrayList<Transaction> filtered = new ArrayList<>();
+        LocalDate startDate = LocalDate.parse(startDateInput, DATE_FORMATTER);
+        for (Transaction transaction : result) {
+            if (transaction.getDate().isAfter(startDate)) filtered.add(transaction);
+        }
+        return filtered;
+    }
+
+    private static ArrayList<Transaction> filterByEndDate(String endDateInput, ArrayList<Transaction> result) {
+        if (endDateInput.isBlank()) {
+            return result;
+        }
+        ArrayList<Transaction> filtered = new ArrayList<>();
+        LocalDate startDate = LocalDate.parse(endDateInput, DATE_FORMATTER);
+        for (Transaction transaction : result) {
+            if (transaction.getDate().isBefore(startDate)) filtered.add(transaction);
+        }
+        return filtered;
+    }
+
+    private static ArrayList<Transaction> filterByDescription(String descriptionInput, ArrayList<Transaction> result) {
+        if (descriptionInput.isBlank()) {
+            return result;
+        }
+        ArrayList<Transaction> filtered = new ArrayList<>();
+        for (Transaction transaction : result) {
+            if (transaction.getDescription().equalsIgnoreCase(descriptionInput)) filtered.add(transaction);
+        } return filtered;
+    }
+
+    private static ArrayList<Transaction> filterByVendor(String vendorInput, ArrayList<Transaction> result) {
+        if (vendorInput.isBlank()) {
+            return result;
+        }
+        ArrayList<Transaction> filtered = new ArrayList<>();
+        for (Transaction transaction : result) {
+            if (transaction.getVendor().equalsIgnoreCase(vendorInput)) filtered.add(transaction);
+            }
+            return filtered;
+        }
+
+    private static ArrayList<Transaction> filterByAmount(String amountInput, ArrayList<Transaction> result) {
+        if (amountInput.isBlank()) {
+            return result;
+        }
+        double amount = Double.parseDouble(amountInput);
+        ArrayList<Transaction> filtered = new ArrayList<>();
+        for (Transaction transaction : result) {
+            if (transaction.getAmount() == amount) filtered.add(transaction);
+        } return filtered;
     }
 }
+
 
