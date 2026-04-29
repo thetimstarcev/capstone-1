@@ -267,6 +267,8 @@ public class BankLedger {
     /**
      * Display all transactions on the screen
      */
+    // displayAll();
+    // displayTransactions(transactionList);
     private static void displayAll() {
         loadTransactions();
         for (Transaction transaction : transactionList) {
@@ -418,13 +420,15 @@ public class BankLedger {
         result = filterByAmount(amountInput, result);
 
         System.out.println("---Your custom report:---");
-        //displayTransactions(result);
+        displayTransactions(result);
         }
-//
-//        displayAll();
-//        displayTransactions(transactionList);
 
-
+    //loop and print transactions
+    public static void displayTransactions(ArrayList<Transaction> transactions) {
+        for (Transaction transaction : transactions) {
+            transaction.displayTransactions();
+        }
+    }
 
     private static ArrayList<Transaction> filterByStartDate(String startDateInput, ArrayList<Transaction> result) {
         if (startDateInput.isBlank()) {
