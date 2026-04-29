@@ -12,6 +12,11 @@ public class BankLedger {
     static LocalDate today = LocalDate.now();
     static ArrayList<Transaction> transactionList = new ArrayList<>();
 
+    public static void main(String[] args) {
+        mainMenu();
+        System.out.println("Have a great day!");
+    }
+
     static void loadTransactions() {
         BufferedReader reader;
         try {
@@ -36,18 +41,17 @@ public class BankLedger {
         }
     }
 
-    private static String getDate() {
-        String date = null;
+    private static LocalDate getDate() {
+        LocalDate date = null;
         boolean validDate = false;
         do {
             try {
                 System.out.println("Please enter the transaction date (MM/DD/YYYY): ");
                 String dateInput = scanner.nextLine(); //enter US date format
-                DateTimeFormatter inputDateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-                LocalDate inputDate = LocalDate.parse(dateInput, inputDateFormatter);
 
-                DateTimeFormatter outputDateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-                date = inputDate.format(outputDateFormatter);
+                DateTimeFormatter inputDateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+                date = LocalDate.parse(dateInput, inputDateFormatter);
+
                 validDate = true;
             } catch (Exception e) {
                 System.out.println("Invalid time format. Try again.");
@@ -56,48 +60,45 @@ public class BankLedger {
         return date;
     }
 
-    private static String getTime() {
-        String time = null;
+    private static LocalTime getTime() {
+        LocalTime time = null;
         boolean validTime = false;
         do {
-            try {
-                System.out.println("Please enter the transaction time (HH:mm or HH:mm:ss): ");
-                String timeInput = scanner.nextLine();
-                // adding 0 and seconds if hour is entered as a single number
-                if (timeInput.length() == 4) {
-                    timeInput = "0" + timeInput + ":00";
-                    // adding 0 if hour entered as a single number
-                } else if (timeInput.length() == 7) {
-                    timeInput = "0" + timeInput;
-                    // adding seconds if not entered
-                } else if (timeInput.length() == 5) {
-                    timeInput = timeInput + ":00";
-                }
-                time = timeInput;
+            System.out.println("Please enter the transaction time (HH:mm or HH:mm:ss): ");
+            String timeInput = scanner.nextLine();
+
+            // adding 0 and seconds if hour is entered as a single number
+            if (timeInput.length() == 4 && timeInput.contains(":")) {
+                timeInput = "0" + timeInput + ":00";
                 validTime = true;
-            } catch (Exception e) {
+            }
+            // adding 0 if hour entered as a single number
+            else if (timeInput.length() == 7 && timeInput.contains(":")) {
+                timeInput = "0" + timeInput;
+                validTime = true;
+            }
+
+            // adding seconds if not entered
+            else if (timeInput.length() == 5) {
+                timeInput = timeInput + ":00";
+                validTime = true;
+            }
+            else {
                 System.out.println("Invalid time format. Try again.");
             }
+            time = LocalTime.parse(timeInput);
         } while (!validTime);
         return time;
     }
 
-    public static String getCurrentDate() {
-        LocalDate date = LocalDate.now(); // Adding date and formatting it
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return (date.format(dateFormatter));
-    }
-
-    public static String getCurrentTime() {
-        LocalTime time = LocalTime.now();
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return (time.format(timeFormatter));
-    }
-
-    public static void main(String[] args) {
-        mainMenu();
-        System.out.println("Have a great day!");
-    }
+//    public static LocalDate getCurrentDate() {
+//        LocalDate date = LocalDate.now(); // Adding date and formatting it
+//        return LocalDate.now();
+//    }
+//
+//    public static LocalTime getCurrentTime() {
+//        return LocalTime.now().withSecond(59);
+//    }
 
     //Displaying Main Menu
     private static void mainMenu() {
@@ -135,18 +136,19 @@ public class BankLedger {
         } while (running);
     }
 
+    //Adding Deposit
     private static void addDeposit() {
         System.out.println("--- Add Deposit---");
-        String date = null;
-        String time = null;
+        LocalDate date = null;
+        LocalTime time = null;
 
         boolean done = false;
         do {
             System.out.println("Would you like to use current date and time? (yes/no):");
             String userInput = scanner.nextLine();
             if (userInput.equalsIgnoreCase("Yes")) {
-                date = getCurrentDate();
-                time = getCurrentTime();
+                date = LocalDate.now();
+                time = LocalTime.now();
                 done = true;
             } else if (userInput.equalsIgnoreCase("No")) {
                 date = getDate();
@@ -176,20 +178,21 @@ public class BankLedger {
             System.out.println("Error saving your transaction");
         }
         System.out.println("Deposit added!");
-
     }
 
+    // Making Payment
     private static void makePayment() {
         System.out.println("--- Make Payment---");
-        System.out.println("Would you like to use current date and time? (yes/no):");
-        String userInput = scanner.nextLine();
-        String date = null;
-        String time = null;
+        LocalDate date = null;
+        LocalTime time = null;
+
         boolean done = false;
         do {
+            System.out.println("Would you like to use current date and time? (yes/no):");
+            String userInput = scanner.nextLine();
             if (userInput.equalsIgnoreCase("Yes")) {
-                date = getCurrentDate();
-                time = getCurrentTime();
+                date = LocalDate.now();
+                time = LocalTime.now();
                 done = true;
             } else if (userInput.equalsIgnoreCase("No")) {
                 date = getDate();
@@ -222,6 +225,7 @@ public class BankLedger {
         System.out.println("Payment added!");
     }
 
+    //Displaying Ledger submenu
     private static void ledger() {
         String prompt = """
                 A) All
@@ -355,8 +359,14 @@ public class BankLedger {
     }
 
     private static void previousYear () {
-        //TODO
+        loadTransactions();
+        int previousYear = LocalDate.now().getYear() -1;
+        for (Transaction transaction : transactionList) {
+            if (transaction.getDate().getYear() == previousYear) {
+                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+            }
         }
+    }
 
     private static void searchByVendor () {
         System.out.println("--- Search Your Transaction by Vendor---");
