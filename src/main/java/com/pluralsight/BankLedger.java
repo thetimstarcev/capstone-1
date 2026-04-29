@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Scanner;
 
 public class BankLedger {
@@ -14,10 +15,10 @@ public class BankLedger {
 
     public static void main(String[] args) {
         mainMenu();
-        System.out.println("Have a great day!");
+        System.out.println("Thank you for using our App!");
     }
 
-    static void loadTransactions() {
+    private static void loadTransactions() {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
@@ -39,6 +40,10 @@ public class BankLedger {
         } catch (IOException e) {
             System.out.println("Error displaying your transactions.");
         }
+    }
+
+    public static void sortTransaction(){
+        transactionList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
     }
 
     private static LocalDate getDate() {
@@ -101,7 +106,7 @@ public class BankLedger {
                 L) Ledger
                 X) Exit
                 
-                Choose an option:
+                Please choose an option:
                 """;
         boolean running = true;
         do {
@@ -219,13 +224,15 @@ public class BankLedger {
     //Displaying Ledger submenu
     private static void ledger() {
         String prompt = """
+                --- Ledger---
+                
                 A) All
                 D) Deposits
                 P) Payments
                 R) Reports
                 H) Home
                 
-                Choose an option:
+                Please choose an option:
                 """;
         boolean running = true;
 
@@ -257,7 +264,7 @@ public class BankLedger {
 
     private static void displayAll() {
         loadTransactions();
-
+        sortTransaction();
         for (Transaction transaction : transactionList) {
             transaction.displayTransactions();
         }
@@ -267,7 +274,7 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() > 0) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
     }
@@ -276,21 +283,24 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() < 0) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
     }
 
     private static void displayReports() {
         String prompt = """
+                --- Reports---
+                
                 1) Month To Date
                 2) Previous Month
                 3) Year To Date
                 4) Previous Year
                 5) Search by Vendor
+                6) Custom Search
                 0) Back
                 
-                Choose an option:
+                Please choose an option:
                 """;
         boolean running = true;
 
@@ -314,6 +324,9 @@ public class BankLedger {
                 case "5":
                     searchByVendor();
                     break;
+                case "6":
+                    customSearch();
+                    break;
                 case "0":
                     ledger();
                     break;
@@ -327,7 +340,7 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue() == today.getMonthValue()) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
     }
@@ -336,7 +349,7 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue()==today.getMonthValue()-1) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
     }
@@ -345,7 +358,7 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear()) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
     }
@@ -355,7 +368,7 @@ public class BankLedger {
         int previousYear = LocalDate.now().getYear() -1;
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == previousYear) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
     }
@@ -367,9 +380,13 @@ public class BankLedger {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getVendor().equalsIgnoreCase(vendor)) {
-                System.out.println(transaction.getDate() + " | " + transaction.getTime() + " | " + transaction.getDescription() + " | " + transaction.getVendor() + " | " + transaction.getAmount());
+                transaction.displayTransactions();
             }
         }
+    }
+
+    private static void customSearch() {
+        //TODO
     }
 }
 
