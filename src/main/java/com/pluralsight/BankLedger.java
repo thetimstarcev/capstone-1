@@ -10,8 +10,8 @@ import java.util.Scanner;
 
 public class BankLedger {
     static Scanner scanner = new Scanner(System.in);
-    static LocalDate today = LocalDate.now();
     static ArrayList<Transaction> transactionList = new ArrayList<>();
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     public static void main(String[] args) {
         mainMenu();
@@ -40,6 +40,7 @@ public class BankLedger {
         } catch (IOException e) {
             System.out.println("Error displaying your transactions.");
         }
+        sortTransaction();
     }
 
     public static void sortTransaction(){
@@ -164,11 +165,12 @@ public class BankLedger {
         System.out.println("Please enter the amount:");
         double amount = scanner.nextDouble();
 
+
         //Adding the information and save it to the csv file
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
-            writer.write(date + "|" + time + "|" + description + "|" + vendor + "|" + amount);
+            writer.write(date + "|" + time.format(TIME_FORMATTER) + "|" + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your transaction");
@@ -264,9 +266,11 @@ public class BankLedger {
         } while (running);
     }
 
+    /**
+     * Display all transactions on the screen
+     */
     private static void displayAll() {
         loadTransactions();
-        sortTransaction();
         for (Transaction transaction : transactionList) {
             transaction.displayTransactions();
         }
@@ -274,7 +278,6 @@ public class BankLedger {
 
     private static void displayDeposits() {
         loadTransactions();
-        sortTransaction();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() > 0) {
                 transaction.displayTransactions();
@@ -284,7 +287,6 @@ public class BankLedger {
 
     private static void displayPayments() {
         loadTransactions();
-        sortTransaction();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() < 0) {
                 transaction.displayTransactions();
@@ -342,7 +344,7 @@ public class BankLedger {
 
     private static void monthToDate() {
         loadTransactions();
-        sortTransaction();
+        LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue() == today.getMonthValue()) {
                 transaction.displayTransactions();
@@ -352,7 +354,7 @@ public class BankLedger {
 
     private static void previousMonth () {
         loadTransactions();
-        sortTransaction();
+        LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear() && transaction.getDate().getMonthValue()==today.getMonthValue()-1) {
                 transaction.displayTransactions();
@@ -362,7 +364,7 @@ public class BankLedger {
 
     private static void yearToDate () {
         loadTransactions();
-        sortTransaction();
+        LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == today.getYear()) {
                 transaction.displayTransactions();
@@ -372,7 +374,6 @@ public class BankLedger {
 
     private static void previousYear () {
         loadTransactions();
-        sortTransaction();
         int previousYear = LocalDate.now().getYear() -1;
         for (Transaction transaction : transactionList) {
             if (transaction.getDate().getYear() == previousYear) {
@@ -386,12 +387,16 @@ public class BankLedger {
         System.out.println("Please enter the name of the Vendor: ");
         String vendor = scanner.nextLine();
         loadTransactions();
-        sortTransaction();
         for (Transaction transaction : transactionList) {
             if (transaction.getVendor().equalsIgnoreCase(vendor)) {
                 transaction.displayTransactions();
             }
         }
+    }
+
+
+    public static void displayTransactions(ArrayList<Transaction> transactions) {
+        //loop and print transactions
     }
 
     private static void customSearch() {
@@ -412,6 +417,12 @@ public class BankLedger {
 
         System.out.println("Please enter the amount or press Enter to skip: ");
         String amountInput = scanner.nextLine();
+
+//        ArrayList<Transaction> result = filterByStartDate(startDateInput, transactionList);
+////        result = filterByEndDate(endDateInput, transactionList);
+//
+//        displayAll();
+//        displayTransactions(transactionList);
 
     }
 }
