@@ -40,7 +40,6 @@ public class BankLedger {
         String date = null;
         boolean validDate = false;
         do {
-            System.out.println("--- Make Payment---");
             try {
                 System.out.println("Please enter the transaction date (MM/DD/YYYY): ");
                 String dateInput = scanner.nextLine(); //enter US date format
@@ -74,6 +73,7 @@ public class BankLedger {
                 } else if (timeInput.length() == 5) {
                     timeInput = timeInput + ":00";
                 }
+                time = timeInput;
                 validTime = true;
             } catch (Exception e) {
                 System.out.println("Invalid time format. Try again.");
@@ -99,6 +99,7 @@ public class BankLedger {
         System.out.println("Have a great day!");
     }
 
+    //Displaying Main Menu
     private static void mainMenu() {
         String prompt = """
                 Welcome to Your Bank Ledger
@@ -136,6 +137,26 @@ public class BankLedger {
 
     private static void addDeposit() {
         System.out.println("--- Add Deposit---");
+        String date = null;
+        String time = null;
+
+        boolean done = false;
+        do {
+            System.out.println("Would you like to use current date and time? (yes/no):");
+            String userInput = scanner.nextLine();
+            if (userInput.equalsIgnoreCase("Yes")) {
+                date = getCurrentDate();
+                time = getCurrentTime();
+                done = true;
+            } else if (userInput.equalsIgnoreCase("No")) {
+                date = getDate();
+                time = getTime();
+                done = true;
+            } else {
+                System.out.println("Invalid input. Please try again");
+            }
+        } while (!done);
+
         System.out.println("Please enter the transaction description: ");
         String description = scanner.nextLine();
 
@@ -149,12 +170,13 @@ public class BankLedger {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
-            writer.write(description + "|" + vendor + "|" + amount);
+            writer.write(date + "|" + time + "|" + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your transaction");
         }
         System.out.println("Deposit added!");
+
     }
 
     private static void makePayment() {
@@ -199,9 +221,6 @@ public class BankLedger {
         }
         System.out.println("Payment added!");
     }
-
-
-
 
     private static void ledger() {
         String prompt = """
@@ -305,7 +324,7 @@ public class BankLedger {
                 default:
                     System.out.println("Invalid input. Please try again.");
             }
-        } while (true);
+        } while (running);
     }
 
     private static void monthToDate() {
