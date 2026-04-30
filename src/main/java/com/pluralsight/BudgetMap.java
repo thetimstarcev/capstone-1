@@ -8,11 +8,16 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Scanner;
 
-public class BankLedger {
+public class BudgetMap {
     static Scanner scanner = new Scanner(System.in);
     static ArrayList<Transaction> transactionList = new ArrayList<>();
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+    public static void printHeader () {
+        System.out.printf("%-12s %-12s %-30s %-25s %-15s%n", "Date", "Time", "Description", "Vendor", "Amount");
+        System.out.println("----------------------------------------------------------------------------------------------");
+    }
 
     public static void main(String[] args) {
         mainMenu();
@@ -20,6 +25,7 @@ public class BankLedger {
     }
 
     private static void loadTransactions() {
+        printHeader();
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
@@ -98,15 +104,25 @@ public class BankLedger {
     //Displaying Main Menu
     private static void mainMenu() {
         String prompt = """
-                Welcome to Your Bank Ledger
                 
-                D) Add Deposit
-                P) Make Payment
-                L) Ledger
+                        ╭╮ ╷ ╷╶┬╮╭─╴╭─╴╶┬╴╭┬╮╭─╮╭─╮
+                        ├┴╮│ │ │││╶╮├╴  │ │││├─┤├─╯
+                        ╰─╯╰─╯╶┴╯╰─╯╰─╴ ╵ ╵ ╵╵ ╵╵ \s
+                ==========================================
+                             💰 BudgetMap 💰
+                         Personal Budget Tracker
+                ==========================================
+                Track your income, expenses, and spending
+                
+                D) Add Income
+                P) Make Expense
+                L) View Budget Ledger
                 X) Exit
+                __________________________________________
                 
                 Please choose an option:
-                """;
+                """
+                ;
         boolean running = true;
         do {
             System.out.println(prompt);
@@ -114,10 +130,10 @@ public class BankLedger {
 
             switch (userInput) {
                 case "D", "d":
-                    addDeposit();
+                    addIncome();
                     break;
                 case "P", "p":
-                    makePayment();
+                    addExpense();
                     break;
                 case "L", "l":
                     displayLedger();
@@ -132,8 +148,8 @@ public class BankLedger {
     }
 
     //Adding Deposit
-    private static void addDeposit() {
-        System.out.println("--- Add Deposit---");
+    private static void addIncome() {
+        System.out.println("========= Add Income =========");
         LocalDate date = null;
         LocalTime time = null;
 
@@ -154,14 +170,15 @@ public class BankLedger {
             }
         } while (!done);
 
-        System.out.println("Please enter the transaction description: ");
+        System.out.println("Please enter income description: ");
         String description = scanner.nextLine();
 
         System.out.println("Please enter vendor: ");
         String vendor = scanner.nextLine();
 
-        System.out.println("Please enter the amount:");
-        double amount = scanner.nextDouble();
+        System.out.println("Please enter amount:");
+        String inputAmount = scanner.nextLine();
+        double amount = Double.parseDouble(inputAmount);
 
 
         //Adding the information and save it to the csv file
@@ -171,16 +188,22 @@ public class BankLedger {
             writer.write(date + "|" + time.format(TIME_FORMATTER) + "|" + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
-            System.out.println("Error saving your transaction");
+            System.out.println("Error saving your income");
         }
-        System.out.println("Deposit added!");
-        System.out.println("Would you like to add another deposit? (yes/no): ");
+        System.out.println("Income added successfully!");
 
+        System.out.println("\nWould you like to add another income? (yes/no): ");
+        String userAnswer = scanner.nextLine();
+        if (userAnswer.equalsIgnoreCase("yes")) {
+            addIncome();
+        }
     }
 
-    // Making Payment
-    private static void makePayment() {
-        System.out.println("--- Make Payment---");
+    /**
+     * Display all transactions on the screen
+     */
+    private static void addExpense() {
+        System.out.println("========= Add Expense =========");
         LocalDate date = null;
         LocalTime time = null;
 
@@ -201,13 +224,13 @@ public class BankLedger {
             }
         } while (!done);
 
-        System.out.println("Please enter the transaction description: ");
+        System.out.println("Please enter expense description: ");
         String description = scanner.nextLine();
 
         System.out.println("Please enter vendor: ");
         String vendor = scanner.nextLine();
 
-        System.out.println("Please enter the amount:");
+        System.out.println("Please enter the amount: ");
         double amount = scanner.nextDouble() * -1; //make the amount negative
 
 
@@ -218,21 +241,23 @@ public class BankLedger {
             writer.write(date + "|" + time.format(TIME_FORMATTER) + "|" + description + "|" + vendor + "|" + amount);
             writer.close();
         } catch (IOException e) {
-            System.out.println("Error saving your transaction.");
+            System.out.println("Error saving your expense.");
         }
-        System.out.println("Payment added!");
+        System.out.println("Expense added successfully!");
     }
 
     //Displaying Ledger submenu
     private static void displayLedger() {
         String prompt = """
-                --- Ledger---
+                
+                ========= BUDGET LEDGER =========
                 
                 A) All
-                D) Deposits
-                P) Payments
-                R) Reports
+                D) Income Only
+                P) Expenses Only
+                R) Budget Reports
                 H) Home
+                _________________________________
                 
                 Please choose an option:
                 """;
@@ -247,10 +272,10 @@ public class BankLedger {
                     displayAll();
                     break;
                 case "D", "d":
-                    displayDeposits();
+                    displayIncome();
                     break;
                 case "P", "p":
-                    displayPayments();
+                    displayExpenses();
                     break;
                 case "R", "r":
                     displayReports();
@@ -276,7 +301,10 @@ public class BankLedger {
         }
     }
 
-    private static void displayDeposits() {
+    /**
+     * Display deposit transactions on the screen
+     */
+    private static void displayIncome() {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() > 0) {
@@ -285,7 +313,10 @@ public class BankLedger {
         }
     }
 
-    private static void displayPayments() {
+    /**
+     * Display payments transactions on the screen
+     */
+    private static void displayExpenses() {
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() < 0) {
@@ -296,15 +327,16 @@ public class BankLedger {
 
     private static void displayReports() {
         String prompt = """
-                --- Reports---
+                ========= BUDGET REPORTS =========
                 
-                1) Month To Date
+                1) Month To Date Spending
                 2) Previous Month
                 3) Year To Date
                 4) Previous Year
                 5) Search by Vendor
                 6) Custom Search
                 0) Back
+                __________________________________
                 
                 Please choose an option:
                 """;
@@ -403,10 +435,10 @@ public class BankLedger {
         System.out.println("Please enter end date (MM/DD/YYYY) or press Enter to skip: ");
         String endDateInput = scanner.nextLine();
 
-        System.out.println("Please enter transaction description or press Enter to skip: ");
+        System.out.println("Please enter income/expense description or press Enter to skip: ");
         String descriptionInput = scanner.nextLine();
 
-        System.out.println("Please enter transaction vendor or press Enter to skip: ");
+        System.out.println("Please enter vendor or press Enter to skip: ");
         String vendorInput = scanner.nextLine();
 
         System.out.println("Please enter the amount or press Enter to skip: ");
@@ -419,7 +451,7 @@ public class BankLedger {
         result = filterByVendor(vendorInput, result);
         result = filterByAmount(amountInput, result);
 
-        System.out.println("---Your custom report:---");
+        System.out.println("========= CUSTOM REPORT =========");
         displayTransactions(result);
         }
 

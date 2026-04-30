@@ -40,7 +40,7 @@ public class Transaction {
     //endregions
 
     public void displayTransactions () {
-        System.out.printf("%-12s %-12s %-30s %-20s $%10.2f%n", date, time, description, vendor, amount);
+        System.out.printf("%-12s %-12s %-30s %-25s $%10.2f%n", date, time.format(BudgetMap.TIME_FORMATTER), description, vendor, amount);
     }
 
 
