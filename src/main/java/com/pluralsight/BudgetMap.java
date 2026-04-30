@@ -114,10 +114,10 @@ public class BudgetMap {
                 ==========================================
                 Track your income, expenses, and spending
                 
-                D) Add Income
-                P) Make Expense
-                L) View Budget Ledger
-                X) Exit
+                💰 Add Income                          (D)
+                📉 Make Expense                        (P)
+                📊 View Budget Ledger                  (L)
+                ❌ Exit                                (X)
                 __________________________________________
                 
                 Please choose an option:
@@ -149,6 +149,7 @@ public class BudgetMap {
 
     //Adding Deposit
     private static void addIncome() {
+        System.out.println();
         System.out.println("========= Add Income =========");
         LocalDate date = null;
         LocalTime time = null;
@@ -178,7 +179,8 @@ public class BudgetMap {
 
         System.out.println("Please enter amount:");
         String inputAmount = scanner.nextLine();
-        double amount = Double.parseDouble(inputAmount);
+        double amount = getDoubleFromUser(inputAmount);
+
 
 
         //Adding the information and save it to the csv file
@@ -191,7 +193,6 @@ public class BudgetMap {
             System.out.println("Error saving your income");
         }
         System.out.println("Income added successfully!");
-
         System.out.println("\nWould you like to add another income? (yes/no): ");
         String userAnswer = scanner.nextLine();
         if (userAnswer.equalsIgnoreCase("yes")) {
@@ -203,6 +204,7 @@ public class BudgetMap {
      * Display all transactions on the screen
      */
     private static void addExpense() {
+        System.out.println();
         System.out.println("========= Add Expense =========");
         LocalDate date = null;
         LocalTime time = null;
@@ -231,7 +233,8 @@ public class BudgetMap {
         String vendor = scanner.nextLine();
 
         System.out.println("Please enter the amount: ");
-        double amount = scanner.nextDouble() * -1; //make the amount negative
+        String userInput = scanner.nextLine(); //make the amount negative
+        double amount = getDoubleFromUser(userInput) * -1;
 
 
         //Adding the information and save it to the csv file
@@ -244,6 +247,11 @@ public class BudgetMap {
             System.out.println("Error saving your expense.");
         }
         System.out.println("Expense added successfully!");
+        System.out.println("\nWould you like to add another expense? (yes/no): ");
+        String userAnswer = scanner.nextLine();
+        if (userAnswer.equalsIgnoreCase("yes")) {
+            addExpense();
+        }
     }
 
     //Displaying Ledger submenu
@@ -252,11 +260,11 @@ public class BudgetMap {
                 
                 ========= BUDGET LEDGER =========
                 
-                A) All
-                D) Income Only
-                P) Expenses Only
-                R) Budget Reports
-                H) Home
+                📂 All(A)
+                D) Income Only(D)
+                P) Expenses Only(P)
+                R) Budget Reports(R)
+                H) Home(H)
                 _________________________________
                 
                 Please choose an option:
@@ -393,6 +401,28 @@ public class BudgetMap {
             }
         }
     }
+
+
+    /**
+     * Gets a valid double from user input.
+     * @param prompt String
+     * @return double value
+     */
+    public static double getDoubleFromUser(String prompt) {
+        double amount = 0;
+        do {
+            try {
+                amount = Double.parseDouble(prompt);
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid format. Please try again!");
+                System.out.println("Please enter amount: ");
+                prompt = scanner.nextLine();
+            }
+        } while (true);
+        return amount;
+    }
+
 
     private static void displayYearToDate() {
         loadTransactions();
