@@ -25,7 +25,6 @@ public class BudgetMap {
     }
 
     private static void loadTransactions() {
-        printHeader();
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
@@ -182,22 +181,27 @@ public class BudgetMap {
         double amount = getDoubleFromUser(inputAmount);
 
 
-
         //Adding the information and save it to the csv file
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
             writer.newLine();
-            writer.write(date + "|" + time.format(TIME_FORMATTER) + "|" + description + "|" + vendor + "|" + amount);
+            writer.write(String.format(date + "|" + time.format(TIME_FORMATTER) + "|" + description + "|" + vendor + "|" + "%.2f", amount));
             writer.close();
         } catch (IOException e) {
             System.out.println("Error saving your income");
         }
         System.out.println("Income added successfully!");
-        System.out.println("\nWould you like to add another income? (yes/no): ");
-        String userAnswer = scanner.nextLine();
-        if (userAnswer.equalsIgnoreCase("yes")) {
-            addIncome();
-        }
+
+        do {
+            System.out.println("\nWould you like to add another income? (yes/no): ");
+            String userAnswer = scanner.nextLine();
+            if (userAnswer.equalsIgnoreCase("yes")) {
+                addIncome();
+                break;
+            } else if (userAnswer.equalsIgnoreCase("no")) {
+                break;
+            } else System.out.println("Invalid input. Please try again!");
+        } while (true);
     }
 
     /**
@@ -236,7 +240,6 @@ public class BudgetMap {
         String userInput = scanner.nextLine(); //make the amount negative
         double amount = getDoubleFromUser(userInput) * -1;
 
-
         //Adding the information and save it to the csv file
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/transactions.csv", true));
@@ -247,11 +250,16 @@ public class BudgetMap {
             System.out.println("Error saving your expense.");
         }
         System.out.println("Expense added successfully!");
-        System.out.println("\nWould you like to add another expense? (yes/no): ");
-        String userAnswer = scanner.nextLine();
-        if (userAnswer.equalsIgnoreCase("yes")) {
-            addExpense();
-        }
+        do {
+            System.out.println("\nWould you like to add another expense? (yes/no): ");
+            String userAnswer = scanner.nextLine();
+            if (userAnswer.equalsIgnoreCase("yes")) {
+                addExpense();
+                break;
+            } else if (userAnswer.equalsIgnoreCase("no")) {
+                break;
+            } else System.out.println("Invalid input. Please try again!");
+        } while (true);
     }
 
     //Displaying Ledger submenu
@@ -303,6 +311,7 @@ public class BudgetMap {
     // displayAll();
     // displayTransactions(transactionList);
     private static void displayAll() {
+        printHeader();
         loadTransactions();
         for (Transaction transaction : transactionList) {
             transaction.displayTransactions();
@@ -313,6 +322,7 @@ public class BudgetMap {
      * Display deposit transactions on the screen
      */
     private static void displayIncome() {
+        printHeader();
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() > 0) {
@@ -325,6 +335,7 @@ public class BudgetMap {
      * Display payments transactions on the screen
      */
     private static void displayExpenses() {
+        printHeader();
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getAmount() < 0) {
@@ -383,6 +394,7 @@ public class BudgetMap {
     }
 
     private static void displayMonthToDate() {
+        printHeader();
         loadTransactions();
         LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
@@ -393,6 +405,7 @@ public class BudgetMap {
     }
 
     private static void displayPreviousMonth() {
+        printHeader();
         loadTransactions();
         LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
@@ -409,7 +422,7 @@ public class BudgetMap {
      * @return double value
      */
     public static double getDoubleFromUser(String prompt) {
-        double amount = 0;
+        double amount;
         do {
             try {
                 amount = Double.parseDouble(prompt);
@@ -423,8 +436,8 @@ public class BudgetMap {
         return amount;
     }
 
-
     private static void displayYearToDate() {
+        printHeader();
         loadTransactions();
         LocalDate today = LocalDate.now();
         for (Transaction transaction : transactionList) {
@@ -435,6 +448,7 @@ public class BudgetMap {
     }
 
     private static void displayPreviousYear() {
+        printHeader();
         loadTransactions();
         int previousYear = LocalDate.now().getYear() -1;
         for (Transaction transaction : transactionList) {
@@ -448,6 +462,7 @@ public class BudgetMap {
         System.out.println("--- Search Your Transaction by Vendor---");
         System.out.println("Please enter the name of the Vendor: ");
         String vendor = scanner.nextLine();
+        printHeader();
         loadTransactions();
         for (Transaction transaction : transactionList) {
             if (transaction.getVendor().equalsIgnoreCase(vendor)) {
@@ -487,6 +502,7 @@ public class BudgetMap {
 
     //loop and print transactions
     public static void displayTransactions(ArrayList<Transaction> transactions) {
+        printHeader();
         for (Transaction transaction : transactions) {
             transaction.displayTransactions();
         }
