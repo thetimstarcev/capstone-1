@@ -149,7 +149,7 @@ public class BudgetMap {
     //Adding Deposit
     private static void addIncome() {
         System.out.println();
-        System.out.println("========= Add Income =========");
+        System.out.println("=============== ADD INCOME ===============");
         LocalDate date = null;
         LocalTime time = null;
 
@@ -209,7 +209,7 @@ public class BudgetMap {
      */
     private static void addExpense() {
         System.out.println();
-        System.out.println("========= Add Expense =========");
+        System.out.println("============== ADD EXPENSE ===============");
         LocalDate date = null;
         LocalTime time = null;
 
@@ -266,14 +266,14 @@ public class BudgetMap {
     private static void displayLedger() {
         String prompt = """
                 
-                ========= BUDGET LEDGER =========
+                ============= BUDGET LEDGER =============
                 
-                📂 All(A)
-                D) Income Only(D)
-                P) Expenses Only(P)
-                R) Budget Reports(R)
-                H) Home(H)
-                _________________________________
+                📂 All                                (A)
+                💰 Income Only                        (D)
+                💸 Expenses Only                      (P)
+                📊 Budget Reports                     (R)
+                🏠 Home                               (H)
+                _________________________________________
                 
                 Please choose an option:
                 """;
@@ -346,16 +346,17 @@ public class BudgetMap {
 
     private static void displayReports() {
         String prompt = """
-                ========= BUDGET REPORTS =========
                 
-                1) Month To Date Spending
-                2) Previous Month
-                3) Year To Date
-                4) Previous Year
-                5) Search by Vendor
-                6) Custom Search
-                0) Back
-                __________________________________
+                ============ BUDGET REPORTS =============
+                
+                📅 Month To Date Spending             (1)
+                ⏮️ Previous Month                     (2)
+                📆 Year To Date                       (3)
+                🗓️ Previous Year                      (4)
+                🏪 Search by Vendor                   (5)
+                🔍 Custom Search                      (6)
+                🔙 Back                               (7)
+                _________________________________________
                 
                 Please choose an option:
                 """;
@@ -459,7 +460,8 @@ public class BudgetMap {
     }
 
     private static void searchByVendor () {
-        System.out.println("--- Search Your Transaction by Vendor---");
+        System.out.println();
+        System.out.println("=== Search Your Transaction by Vendor ===");
         System.out.println("Please enter the name of the Vendor: ");
         String vendor = scanner.nextLine();
         printHeader();
@@ -473,7 +475,7 @@ public class BudgetMap {
 
     private static void customSearch() {
         loadTransactions();
-        System.out.println("--- Custom Search---");
+        System.out.println("============= CUSTOM SEARCH ==============");
         System.out.println("Please enter start date (MM/DD/YYYY) or press Enter to skip: ");
         String startDateInput = scanner.nextLine();
 
@@ -496,7 +498,7 @@ public class BudgetMap {
         result = filterByVendor(vendorInput, result);
         result = filterByAmount(amountInput, result);
 
-        System.out.println("========= CUSTOM REPORT =========");
+        System.out.println("============= CUSTOM REPORT ==============");
         displayTransactions(result);
         }
 

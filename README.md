@@ -3,7 +3,6 @@
 ## 📌 Project Overview
 A simple command-line application built in Java to keep track of personal finances.  
 The app is designed for basic financial tracking, allowing users to record income and expenses, view transactions, and better understand their spending habits.
-<hr style="height:3px;">
 
 ## ✨ App Features
 - Record income and expenses
@@ -11,7 +10,6 @@ The app is designed for basic financial tracking, allowing users to record incom
 - View transaction history
 - Generate basic financial reports
 - Custom search with multiple filters
-<hr style="height:3px;">
 
 ## ⚙️ Setup & Installation
 1. Clone the repository:
@@ -21,7 +19,6 @@ git clone https://github.com/thetimstarcev/capstone-1.git
 2. Open the project in your IDE (IntelliJ recommended)
 3. Make sure you have Java installed (JDK 17+)
 4. Run the `Main.java` file
-<hr style="height:3px;">
 
 ## 📁 Project Structure
 ```plaintext
@@ -38,7 +35,6 @@ src/
 - `Transaction.java` → defines the Transaction object (date, time, amount, description, etc.)
 - `transactions.csv` → stores all transactions (acts like a simple database)
 - `test/` → reserved for future tests
-<hr style="height:3px;">
 
 ## 🧭 User Flow
 ### From the home screen, the user can:
@@ -68,7 +64,6 @@ src/
 - Amount
 
 ### User can return to previous menus or exit at any time
-<hr style="height:3px;">
 
 ## 💡 Code Highlight
 One part I’m particularly proud of is the custom filtering logic.  
@@ -100,11 +95,9 @@ private static ArrayList<Transaction> filterByStartDate(String input, ArrayList<
     return filtered;
 }
 ```
-<hr style="height:3px;">
 
 ## ⚠️ Challenges I Faced
 One of the main challenges was handling date and time formatting correctly, especially when seconds were missing in some cases. I also had to make file writing consistent to avoid formatting issues when saving and reading data. Another part that took some thought was designing filtering logic that is flexible and reusable instead of hardcoding conditions. At the same time, I tried to keep the console navigation simple and intuitive without making the menus feel cluttered.
-<hr style="height:3px;">
 
 ## 🚀 Future Improvements
 - Export reports (CSV / PDF)
@@ -113,8 +106,10 @@ One of the main challenges was handling date and time formatting correctly, espe
 - Data visualization (charts)
 - Improve error handling and validation
 - Add a GUI (JavaFX or web version)
-<hr style="height:3px;">
 
+## 📸 Screenshots
+![Screenshot 2026-05-01 at 12.28.09 AM.png](../../../Desktop/Screenshot%202026-05-01%20at%2012.28.09%20AM.png)
+![Screenshot 2026-05-01 at 12.22.18 AM.png](../../../Desktop/Screenshot%202026-05-01%20at%2012.22.18%20AM.png)
 
 ## 👤 Author
 **Tim Startsev**
