@@ -37,16 +37,19 @@ public class BudgetMap {
             reader.readLine(); // Skip the header row in the CSV file
 
             String line;
+            // Read each line from the file until the end
             while ((line = reader.readLine()) != null) {
                 String[] parts = line.split("\\|");
+                // Convert string values into correct data types
                 LocalDate date = LocalDate.parse(parts[0]);
                 LocalTime time = LocalTime.parse(parts[1]);
                 String description = parts[2];
                 String vendor = parts[3];
                 double amount = Double.parseDouble(parts[4]);
 
+
                 Transaction transaction = new Transaction(date, time, description, vendor, amount);
-                transactionList.add(transaction);
+                transactionList.add(transaction); // Add transaction to the main list
             }
             reader.close();
         } catch (IOException e) {
@@ -86,16 +89,16 @@ public class BudgetMap {
             System.out.println("Please enter the transaction time (HH:mm or HH:mm:ss): ");
             String timeInput = scanner.nextLine();
 
-            // adding 0 and seconds if hour is entered as a single number
+            // Adding 0 and seconds if hour is entered as a single number
             if (timeInput.length() == 4 && timeInput.contains(":")) {
                 timeInput = "0" + timeInput + ":00";
             }
-            // adding 0 if hour entered as a single number
+            // Adding 0 if hour entered as a single number
             else if (timeInput.length() == 7 && timeInput.contains(":")) {
                 timeInput = "0" + timeInput;
             }
 
-            // adding seconds if not entered
+            // Adding seconds if not entered
             else if (timeInput.length() == 5) {
                 timeInput = timeInput + ":00";
             }
@@ -170,11 +173,14 @@ public class BudgetMap {
         do {
             System.out.println("Would you like to use current date and time? (yes/no):");
             String userInput = scanner.nextLine();
+            // If user wants to use current date and time
             if (userInput.equalsIgnoreCase("Yes")) {
                 date = LocalDate.now();
                 time = LocalTime.now();
                 done = true;
-            } else if (userInput.equalsIgnoreCase("No")) {
+            }
+            // If user wants to enter custom date and time
+            else if (userInput.equalsIgnoreCase("No")) {
                 date = getDate();
                 time = getTime();
                 done = true;
@@ -320,6 +326,9 @@ public class BudgetMap {
         } while (running);
     }
 
+    /**
+     * Displays all transactions.
+     */
     private static void displayAll() {
         printHeader();
         loadTransactions();
@@ -328,6 +337,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Displays only income transactions.
+     */
     private static void displayIncome() {
         printHeader();
         loadTransactions();
@@ -338,6 +350,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Displays only expense transactions.
+     */
     private static void displayExpenses() {
         printHeader();
         loadTransactions();
@@ -348,6 +363,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Displays the reports menu and handles report choices.
+     */
     private static void displayReports() {
         String prompt = """
                 
@@ -398,6 +416,9 @@ public class BudgetMap {
         } while (running);
     }
 
+    /**
+     * Displays transactions from the current month.
+     */
     private static void displayMonthToDate() {
         printHeader();
         loadTransactions();
@@ -409,6 +430,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Displays transactions from the previous month.
+     */
     private static void displayPreviousMonth() {
         printHeader();
         loadTransactions();
@@ -427,6 +451,7 @@ public class BudgetMap {
      */
     public static double getDoubleFromUser(String prompt) {
         double amount;
+        // Keep asking until user enters a valid number
         do {
             try {
                 amount = Double.parseDouble(prompt);
@@ -440,6 +465,9 @@ public class BudgetMap {
         return amount;
     }
 
+    /**
+     * Displays transactions from the current year.
+     */
     private static void displayYearToDate() {
         printHeader();
         loadTransactions();
@@ -451,6 +479,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Displays transactions from the previous year.
+     */
     private static void displayPreviousYear() {
         printHeader();
         loadTransactions();
@@ -462,6 +493,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Searches and displays transactions that match the vendor name.
+     */
     private static void searchByVendor () {
         System.out.println();
         System.out.println("=== Search Your Transaction by Vendor ===");
@@ -497,7 +531,7 @@ public class BudgetMap {
         System.out.println("Please enter the amount or press Enter to skip: ");
         String amountInput = scanner.nextLine();
 
-        // Apply each filter one by one
+        // Start with full list and narrow it down with each filter
         ArrayList<Transaction> result = transactionList;
         result = filterByStartDate(startDateInput, result);
         result = filterByEndDate(endDateInput, result);
@@ -506,8 +540,8 @@ public class BudgetMap {
         result = filterByAmount(amountInput, result);
 
         System.out.println("============= CUSTOM REPORT ==============");
-        displayTransactions(result);
-        }
+        displayTransactions(result); // Display filtered results
+    }
 
     public static void displayTransactions(ArrayList<Transaction> transactions) {
         printHeader();

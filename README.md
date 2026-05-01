@@ -110,6 +110,7 @@ One of the main challenges was handling date and time formatting correctly, espe
 ## 📸 Screenshots
 <img src="./images/home.png" alt="Home Menu" width="300">
 <img src="./images/ledger.png" alt="Ledger Menu" width="300">
+<img src="./images/budget.png" alt="Budget Reports" width="300">
 
 ## 👤 Author
 **Tim Startsev**
