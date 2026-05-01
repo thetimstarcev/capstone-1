@@ -108,8 +108,8 @@ One of the main challenges was handling date and time formatting correctly, espe
 - Add a GUI (JavaFX or web version)
 
 ## 📸 Screenshots
-![Screenshot 2026-05-01 at 12.28.09 AM.png](../../../Desktop/Screenshot%202026-05-01%20at%2012.28.09%20AM.png)
-![Screenshot 2026-05-01 at 12.22.18 AM.png](../../../Desktop/Screenshot%202026-05-01%20at%2012.22.18%20AM.png)
+![Home](./images/home.png)
+![Ledger](./images/ledger.png)
 
 ## 👤 Author
 **Tim Startsev**
