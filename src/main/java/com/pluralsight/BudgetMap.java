@@ -114,7 +114,7 @@ public class BudgetMap {
                 Track your income, expenses, and spending
                 
                 💰 Add Income                          (D)
-                📉 Make Expense                        (P)
+                📉 Record Expense                      (P)
                 📊 View Budget Ledger                  (L)
                 ❌ Exit                                (X)
                 __________________________________________
