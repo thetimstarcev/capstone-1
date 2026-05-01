@@ -14,6 +14,9 @@ public class BudgetMap {
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm:ss");
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM/dd/yyyy");
 
+    /**
+     * Prints the table header for the transaction list.
+     */
     public static void printHeader () {
         System.out.printf("%-12s %-12s %-30s %-25s %-15s%n", "Date", "Time", "Description", "Vendor", "Amount");
         System.out.println("----------------------------------------------------------------------------------------------");
@@ -24,11 +27,14 @@ public class BudgetMap {
         System.out.println("Thank you for using our App!");
     }
 
+    /**
+     * Loads transactions from the CSV file into the transaction list.
+     */
     private static void loadTransactions() {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader("src/main/resources/transactions.csv"));
-            reader.readLine(); //skip header
+            reader.readLine(); // Skip the header row in the CSV file
 
             String line;
             while ((line = reader.readLine()) != null) {
@@ -49,6 +55,9 @@ public class BudgetMap {
         sortTransaction();
     }
 
+    /**
+     * Sorts transactions by date and time, newest first.
+     */
     public static void sortTransaction(){
         transactionList.sort(Comparator.comparing(Transaction::getDate).thenComparing(Transaction::getTime).reversed());
     }
@@ -100,7 +109,9 @@ public class BudgetMap {
         return time;
     }
 
-    //Displaying Main Menu
+    /**
+     * Displays the main menu and handles the user's main choice.
+     */
     private static void mainMenu() {
         String prompt = """
                 
@@ -146,7 +157,9 @@ public class BudgetMap {
         } while (running);
     }
 
-    //Adding Deposit
+    /**
+     * Adds an income transaction and saves it to the CSV file.
+     */
     private static void addIncome() {
         System.out.println();
         System.out.println("=============== ADD INCOME ===============");
@@ -237,8 +250,8 @@ public class BudgetMap {
         String vendor = scanner.nextLine();
 
         System.out.println("Please enter the amount: ");
-        String userInput = scanner.nextLine(); //make the amount negative
-        double amount = getDoubleFromUser(userInput) * -1;
+        String userInput = scanner.nextLine();
+        double amount = getDoubleFromUser(userInput) * -1; // Store expenses as negative numbers
 
         //Adding the information and save it to the csv file
         try {
@@ -262,7 +275,9 @@ public class BudgetMap {
         } while (true);
     }
 
-    //Displaying Ledger submenu
+    /**
+     * Displays the ledger menu and lets the user choose which transactions to view.
+     */
     private static void displayLedger() {
         String prompt = """
                 
@@ -305,11 +320,6 @@ public class BudgetMap {
         } while (running);
     }
 
-    /**
-     * Display all transactions on the screen
-     */
-    // displayAll();
-    // displayTransactions(transactionList);
     private static void displayAll() {
         printHeader();
         loadTransactions();
@@ -318,9 +328,6 @@ public class BudgetMap {
         }
     }
 
-    /**
-     * Display deposit transactions on the screen
-     */
     private static void displayIncome() {
         printHeader();
         loadTransactions();
@@ -331,9 +338,6 @@ public class BudgetMap {
         }
     }
 
-    /**
-     * Display payments transactions on the screen
-     */
     private static void displayExpenses() {
         printHeader();
         loadTransactions();
@@ -355,7 +359,7 @@ public class BudgetMap {
                 🗓️ Previous Year                      (4)
                 🏪 Search by Vendor                   (5)
                 🔍 Custom Search                      (6)
-                🔙 Back                               (7)
+                🔙 Back                               (0)
                 _________________________________________
                 
                 Please choose an option:
@@ -416,7 +420,6 @@ public class BudgetMap {
         }
     }
 
-
     /**
      * Gets a valid double from user input.
      * @param prompt String
@@ -473,6 +476,9 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Lets the user search transactions using multiple optional filters.
+     */
     private static void customSearch() {
         loadTransactions();
         System.out.println("============= CUSTOM SEARCH ==============");
@@ -491,6 +497,7 @@ public class BudgetMap {
         System.out.println("Please enter the amount or press Enter to skip: ");
         String amountInput = scanner.nextLine();
 
+        // Apply each filter one by one
         ArrayList<Transaction> result = transactionList;
         result = filterByStartDate(startDateInput, result);
         result = filterByEndDate(endDateInput, result);
@@ -502,7 +509,6 @@ public class BudgetMap {
         displayTransactions(result);
         }
 
-    //loop and print transactions
     public static void displayTransactions(ArrayList<Transaction> transactions) {
         printHeader();
         for (Transaction transaction : transactions) {
@@ -510,9 +516,17 @@ public class BudgetMap {
         }
     }
 
+    /**
+     * Filters transactions that occur after the given start date.
+     * If no start date is provided, returns the original list.
+     *
+     * @param startDateInput the start date entered by the user
+     * @param result the current transaction list
+     * @return transactions after the start date
+     */
     private static ArrayList<Transaction> filterByStartDate(String startDateInput, ArrayList<Transaction> result) {
         if (startDateInput.isBlank()) {
-            return result;
+            return result; // If the user skips this filter, return the current list unchanged
         }
         ArrayList<Transaction> filtered = new ArrayList<>();
         LocalDate startDate = LocalDate.parse(startDateInput, DATE_FORMATTER);

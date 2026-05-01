@@ -108,8 +108,8 @@ One of the main challenges was handling date and time formatting correctly, espe
 - Add a GUI (JavaFX or web version)
 
 ## 📸 Screenshots
-![Home](./images/home.png)
-![Ledger](./images/ledger.png)
+<img src="./images/home.png" alt="Home Menu" width="300">
+<img src="./images/ledger.png" alt="Ledger Menu" width="300">
 
 ## 👤 Author
 **Tim Startsev**

@@ -10,6 +10,9 @@ public class Transaction {
     private final String vendor;
     private final double amount;
 
+    /**
+     * Creates a transaction object.
+     */
     public Transaction(LocalDate date, LocalTime time, String description, String vendor, double amount) {
         this.date = date;
         this.time = time;
@@ -39,6 +42,9 @@ public class Transaction {
     }
     //endregions
 
+    /**
+     * Displays one transaction in formatted table style.
+     */
     public void displayTransactions () {
         System.out.printf("%-12s %-12s %-30s %-25s $%10.2f%n", date, time.format(BudgetMap.TIME_FORMATTER), description, vendor, amount);
     }
